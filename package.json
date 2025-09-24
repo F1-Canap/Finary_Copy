@@ -8,13 +8,16 @@
     "start": "next start",
     "lint": "eslint"
   },
+  "overrides": {
+    "axios": "^1.12.0"
+  },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-slot": "^1.2.3",
     "@reown/appkit": "^1.8.6",
     "@reown/appkit-adapter-bitcoin": "^1.8.6",
     "@reown/appkit-adapter-ethers": "^1.8.6",
-    "@reown/appkit-adapter-solana": "^1.8.6",
+    "@reown/appkit-adapter-solana": "^1.7.14",
     "@reown/appkit-wallet-button": "^1.8.6",
     "@walletconnect/ethereum-provider": "^2.21.9",
     "class-variance-authority": "^0.7.1",
