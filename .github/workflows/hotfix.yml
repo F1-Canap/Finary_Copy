@@ -1,0 +1,28 @@
+name: Hotfix Workflow
+
+on:
+  push:
+    branches: [ 'hotfix/**' ]
+  pull_request:
+    branches: [ 'hotfix/**' ]
+
+jobs:
+  urgent-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      
+  deploy-hotfix:
+    needs: urgent-test
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Emergency Deploy
+        run: echo "Emergency hotfix deployment"
