@@ -23,6 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
 import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
+import { signIn } from "next-auth/react";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -84,7 +85,7 @@ export function LoginForm({}: React.ComponentProps<"div">) {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="flex flex-col gap-4">
-                <Button variant="outline" className="w-full" type="button">
+                <Button onClick={() => signIn("google", { callbackUrl: "/" })} variant="outline" className="w-full" type="button">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -170,7 +171,7 @@ export function LoginForm({}: React.ComponentProps<"div">) {
                   )}
                 />
 
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full mt-2">
                   Login
                 </Button>
               </div>

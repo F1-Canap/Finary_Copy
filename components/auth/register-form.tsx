@@ -90,7 +90,6 @@ export function RegisterForm({}: React.ComponentProps<"div">) {
   const confirmPasswordTouched = form.formState.touchedFields.confirmPassword
   const isEmailValid = watchedEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(watchedEmail)
 
-
   async function onSubmit(values: RegisterFormValues) {
     console.log("Register values:", values)
 
@@ -177,7 +176,6 @@ export function RegisterForm({}: React.ComponentProps<"div">) {
                   )}
                 />
 
-
                 <FormField
                   control={form.control}
                   name="password"
@@ -251,60 +249,59 @@ export function RegisterForm({}: React.ComponentProps<"div">) {
                   )}
                 />
 
-
-              {/* Confirm Password */}
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          type={showConfirmPassword ? "text" : "password"}
-                          placeholder="Confirm your password"
-                          className="pr-10"
-                          {...field}
-                        />
-                        <div className={cn("absolute right-1 top-1/2 transform -translate-y-1/2 flex items-center gap-2")}>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="h-auto p-0 text-gray-500 hover:text-gray-700 hover:bg-transparent"
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          >
-                            {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                          </Button>
+                {/* Confirm Password */}
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            type={showConfirmPassword ? "text" : "password"}
+                            placeholder="Confirm your password"
+                            className="pr-10"
+                            {...field}
+                          />
+                          <div className={cn("absolute right-1 top-1/2 transform -translate-y-1/2 flex items-center gap-2")}>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="h-auto p-0 text-gray-500 hover:text-gray-700 hover:bg-transparent"
+                              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            >
+                              {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    </FormControl>
-                    {confirmPasswordTouched && confirmPassword && (
-                      <div
-                        className={`p-2 rounded-lg border transition-all duration-200 ${
-                          passwordsMatch
-                            ? "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800"
-                            : "bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800"
-                        }`}
-                      >
+                      </FormControl>
+                      {confirmPasswordTouched && confirmPassword && (
                         <div
-                          className={`flex items-center gap-2 text-sm ${
-                            passwordsMatch ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
+                          className={`p-2 rounded-lg border transition-all duration-200 ${
+                            passwordsMatch
+                              ? "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800"
+                              : "bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800"
                           }`}
                         >
-                          {passwordsMatch ? <CheckCircle2 className="h-4 w-4" /> : <X className="h-4 w-4" />}
-                          <span>
-                            {passwordsMatch ? "Passwords match" : "Passwords do not match"}
-                          </span>
+                          <div
+                            className={`flex items-center gap-2 text-sm ${
+                              passwordsMatch ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
+                            }`}
+                          >
+                            {passwordsMatch ? <CheckCircle2 className="h-4 w-4" /> : <X className="h-4 w-4" />}
+                            <span>
+                              {passwordsMatch ? "Passwords match" : "Passwords do not match"}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    )}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-                <Button type="submit" className="w-full">
+                      )}
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full mt-2">
                   Register
                 </Button>
               </div>
