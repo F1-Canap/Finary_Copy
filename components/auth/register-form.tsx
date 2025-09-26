@@ -24,6 +24,8 @@ import Link from "next/link"
 import { CheckCircle2, EyeOff, AlertCircle, Eye, X, Check } from "lucide-react"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
+import { signIn } from "next-auth/react"
+import { redirect } from "next/navigation"
 
 // --- Validation Schema ---
 const registerSchema = z
@@ -94,21 +96,20 @@ export function RegisterForm({}: React.ComponentProps<"div">) {
     console.log("Register values:", values)
 
     try {
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
+      const res = await signIn("credentials", {
+        name: values.name,
+        email: values.email,
+        password : values.password,
+        isRegister: "true",
+        redirect: false,
       })
 
-      if (!res.ok) {
+      if (!res || !res.ok) {
         throw new Error("Registration failed")
       }
 
-      const data = await res.json()
-      console.log("Registration success:", data)
       // redirection, login auto ou message de succès ici
+      redirect("/");
     } catch (err) {
       console.error("Register failed:", err)
       form.setError("email", {
@@ -130,7 +131,6 @@ export function RegisterForm({}: React.ComponentProps<"div">) {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-4">
-                {/* Name */}
                 <FormField
                   control={form.control}
                   name="name"
@@ -138,13 +138,12 @@ export function RegisterForm({}: React.ComponentProps<"div">) {
                     <FormItem>
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="John Doe" {...field} />
+                        <Input placeholder="Your name" type="text" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-
                 {/* Email */}
                 <FormField
                   control={form.control}
