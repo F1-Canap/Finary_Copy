@@ -25,7 +25,7 @@ import { CheckCircle2, EyeOff, AlertCircle, Eye, X, Check } from "lucide-react"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { signIn } from "next-auth/react"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 // --- Validation Schema ---
 const registerSchema = z
@@ -65,6 +65,7 @@ export function RegisterForm({}: React.ComponentProps<"div">) {
   const [showPassword, setShowPassword] = useState(false)
   const [isPasswordFocused, setIsPasswordFocused] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const router = useRouter()
 
   const checks = [
     {
@@ -99,19 +100,19 @@ export function RegisterForm({}: React.ComponentProps<"div">) {
       const res = await signIn("credentials", {
         name: values.name,
         email: values.email,
-        password : values.password,
+        password: values.password,
         isRegister: "true",
-        redirect: false,
+        callbackUrl: "/",
       })
 
       if (!res || !res.ok) {
         throw new Error("Registration failed")
       }
 
-      // redirection, login auto ou message de succès ici
-      redirect("/");
+      // ✅ Redirection après inscription + login auto
+      router.push("/dashboard")
     } catch (err) {
-      console.error("Register failed:", err)
+      console.error("Registration failed:", err)
       form.setError("email", {
         type: "manual",
         message: "Email already in use",

@@ -24,7 +24,7 @@ import Link from "next/link"
 import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
 import { signIn } from "next-auth/react";
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -43,32 +43,33 @@ export function LoginForm({}: React.ComponentProps<"div">) {
   })
   
   const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter()
 
   async function onSubmit(values: LoginFormValues) {
-      console.log("Register values:", values)
-  
-      try {
-        const res = await signIn("credentials", {
-          email: values.email,
-          password: values.password,
-          isRegister: "false",
-          redirect: false,
-        })
-  
-        if (!res || !res.ok) {
-          throw new Error("Registration failed")
-        }
-  
-        // redirection, login auto ou message de succès ici
-        redirect("/");
-      } catch (err) {
-        console.error("Register failed:", err)
-        form.setError("password", {
-          type: "manual",
-          message: "Wrong email or password",
-        })
+    console.log("Login values:", values)
+
+    try {
+      const res = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        isRegister: "false",
+        callbackUrl: "/",
+      })
+
+      if (!res || !res.ok) {
+        throw new Error("Login failed")
       }
+
+      // ✅ Redirection si login réussi
+      router.push("/dashboard")
+    } catch (err) {
+      console.error("Login failed:", err)
+      form.setError("password", {
+        type: "manual",
+        message: "Wrong email or password",
+      })
     }
+  }
 
   return (
       <Card>
