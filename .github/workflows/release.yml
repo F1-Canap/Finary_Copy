@@ -9,9 +9,17 @@ on:
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
+    env:
+      MONGODB_DB_NAME: ${{ vars.MONGODB_DB_NAME }}
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      NEXTAUTH_URL: ${{ vars.NEXTAUTH_URL }}
+      AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+      AUTH_GOOGLE_ID: ${{ secrets.AUTH_GOOGLE_ID }}
+      NEXT_PUBLIC_REOWN_PROJECT_ID: ${{ vars.NEXT_PUBLIC_REOWN_PROJECT_ID }}
+      NEXT_PUBLIC_WC_PROJECT_ID: ${{ vars.NEXT_PUBLIC_WC_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v4
-      - name: Test and Build
+      - name: Run Tests
         run: |
           npm ci
           npm run build
