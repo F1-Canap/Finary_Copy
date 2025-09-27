@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { GalleryVerticalEnd } from "lucide-react";
 import Link from "next/link";
-import { AuthFooter } from "@/components/auth-footer";
+import { AuthFooter } from "@/components/auth/auth-footer";
 import { ModeToggle } from "@/components/theme-switcher";
 
 export const metadata: Metadata = {
