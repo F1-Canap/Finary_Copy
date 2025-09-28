@@ -41,6 +41,9 @@ const handler = NextAuth({
   session: {
     strategy: "jwt",
   },
+  pages: {
+    signIn: '/login',
+  },
   callbacks: {
     async signIn({ user, account, profile }) {
       // Logique spécifique pour Google Provider
