@@ -7,6 +7,7 @@ import { getSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useAppContext } from "@/context/AppContext";
+import { CurrencyDisplay } from "@/components/CurrencyDisplay";
 
 export default function Dashboard() {
   const [session, setSession] = useState<Session | null>(null);
@@ -55,6 +56,7 @@ export default function Dashboard() {
             <p><strong>Decimals :</strong> {currency.decimals}</p>
             <p><strong>Crypto :</strong> {currency.isCrypto ? "Yes" : "No"}</p>
         </div>
+        <span>1000000USD = <CurrencyDisplay amount={1000000} fromCurrency="USD" /></span>
       </main>
     </div>
   );

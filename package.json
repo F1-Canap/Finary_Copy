@@ -28,6 +28,7 @@
     "@types/mongoose": "^5.11.96",
     "@walletconnect/ethereum-provider": "^2.21.9",
     "bcryptjs": "^3.0.2",
+    "ccy-icons": "^1.0.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^17.2.2",
