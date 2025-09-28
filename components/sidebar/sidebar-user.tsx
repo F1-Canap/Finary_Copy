@@ -5,6 +5,7 @@ import {
   Laptop,
   LogOut,
   Moon,
+  Settings2,
   Sun,
   User as UserIcon,
 } from "lucide-react"
@@ -29,14 +30,10 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { useTheme } from "next-themes"
 
-export function SidebarUser({
-  onLogout,
-}: {
-  onLogout: () => void
-}) {
+export function SidebarUser() {
   const { isMobile } = useSidebar()
   const { data: session } = useSession()
   const { setTheme, theme } = useTheme()
@@ -98,13 +95,14 @@ export function SidebarUser({
 
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <Link href="#">
+              <Link href="/profile">
                 <DropdownMenuItem className="cursor-pointer">
                   <UserIcon className="h-4 w-4" />
-                  Profil
+                  Profile
                 </DropdownMenuItem>
               </Link>
             </DropdownMenuGroup>
+            <DropdownMenuSeparator />
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className="cursor-pointer">
                 <Sun className="mr-2 h-4 w-4" />
@@ -134,16 +132,24 @@ export function SidebarUser({
                 </DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuSub>
+            <DropdownMenuGroup>
+              <Link href="/settings">
+                <DropdownMenuItem className="cursor-pointer">
+                  <Settings2 className="h-4 w-4" />
+                  Settings
+                </DropdownMenuItem>
+              </Link>
+            </DropdownMenuGroup>
 
             <DropdownMenuSeparator />
 
             {/* Déconnexion */}
             <DropdownMenuItem
-              onClick={onLogout}
+              onClick={() => signOut({ callbackUrl: "/login" })}
               className="cursor-pointer flex items-center"
             >
               <LogOut className="mr-2 h-4 w-4 text-red-400" />
-              Se déconnecter
+              Log Out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
