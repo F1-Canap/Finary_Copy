@@ -11,7 +11,7 @@ import { useAppContext } from "@/context/AppContext";
 export default function Dashboard() {
   const [session, setSession] = useState<Session | null>(null);
   const router = useRouter();
-  const { showAmounts } = useAppContext();
+  const { showAmounts, currency } = useAppContext();
   const balance = 12500.75
   useEffect(() => {
     async function fetchSession() {
@@ -48,6 +48,13 @@ export default function Dashboard() {
         <p className="text-lg font-semibold">
           {showAmounts ? `${balance.toLocaleString()} €` : "•••••"}
         </p>
+        <div className="space-y-1 text-sm text-foreground">
+            <p><strong>Code :</strong> {currency.code}</p>
+            <p><strong>Name :</strong> {currency.name}</p>
+            <p><strong>Symbol :</strong> {currency.symbol}</p>
+            <p><strong>Decimals :</strong> {currency.decimals}</p>
+            <p><strong>Crypto :</strong> {currency.isCrypto ? "Yes" : "No"}</p>
+        </div>
       </main>
     </div>
   );
