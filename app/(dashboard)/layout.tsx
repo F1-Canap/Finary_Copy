@@ -9,6 +9,7 @@ import { Providers } from "./providers";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { ToggleAmountsButton } from "@/components/ToggleAmountsButton";
+import { CurrencySelectorButton } from "@/components/CurrencySelectorButton";
 
 // Layout principal
 export default function RootLayout({
@@ -24,8 +25,9 @@ export default function RootLayout({
             <SidebarInset className="p-0">
               <div className="flex justify-between pl-4 md:pl-2 pr-4 pt-4">
                 <Breadcrumb />
-                <div className="flex space-x-2">
+                <div className="flex space-x-2 items-center">
                     <ToggleAmountsButton />
+                    <CurrencySelectorButton />
                     <Button variant="default">
                         <Plus className="mr-2 h-4 w-4" />
                         Ajouter un compte
