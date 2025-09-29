@@ -40,6 +40,8 @@ import {
 } from "@/components/ui/form";
 import { Link2, Info } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { apiClient } from "@/lib/apiClient";
 
 type Mode = "wallet" | "binance" | null;
 
@@ -178,6 +180,11 @@ export default function ConnectWalletPage() {
 
       {/* Mode selector cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+        <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 * 0.05 }}
+              >
         <Card className="cursor-pointer" onClick={connectWallet}>
           <CardHeader className="flex flex-col items-center justify-center ">
             <WalletIcon id="wallet-connect" variant="branded" size="60" />
@@ -195,7 +202,12 @@ export default function ConnectWalletPage() {
             </Button>
           </CardContent>
         </Card>
-
+        </motion.div>
+        <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 2 * 0.05 }}
+              >
         <Card
           className="cursor-pointer"
           onClick={() => {
@@ -219,7 +231,12 @@ export default function ConnectWalletPage() {
             </Button>
           </CardContent>
         </Card>
-
+        </motion.div>
+        <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 3 * 0.05 }}
+              >
         <Card
           className="cursor-pointer"
           onClick={() => {
@@ -243,6 +260,7 @@ export default function ConnectWalletPage() {
             </Button>
           </CardContent>
         </Card>
+        </motion.div>
       </div>
 
       {/* Main Dialog */}
