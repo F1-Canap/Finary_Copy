@@ -165,7 +165,6 @@ export default function ConnectWalletPage() {
         throw new Error("Wallet fetch returned status not OK")
       }
 
-      console.log("✅ Fetched wallet data:", data)
       // 2️⃣ Convertir le tableau balances en Record<string, number>
       const balances: Record<string, number> = {}
       for (const b of data.outputs.balances) {
@@ -187,8 +186,12 @@ export default function ConnectWalletPage() {
 
       if (res2.success) {
         toast.success("Wallet ajouté avec succès ✅")
-        console.log("✅ Created wallet in DB:", res2.data)
       } else {
+        if(res2.error === "Erreur de requête: Error: HTTP error! status: 400") {
+          toast.error("Ce wallet existe déjà dans votre liste.")
+          console.error("❌ Wallet DB save error: Duplicate wallet")
+          return
+        }
         toast.error(`Erreur lors de la création du wallet: ${res2.error}`)
         console.error("❌ Wallet DB save error:", res2.error)
       }
