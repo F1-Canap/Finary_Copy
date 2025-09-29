@@ -30,18 +30,18 @@ export function useCurrencyFormatter() {
   useEffect(() => {
     async function fetchRates() {
       // Vérifier le cache
-      const cachedStr = localStorage.getItem(CACHE_KEY)
+        const cachedStr = localStorage.getItem(CACHE_KEY)
         if (cachedStr) {
-        try {
-            const cached: CacheEntry = JSON.parse(cachedStr)
-            if (Date.now() - cached.timestamp < CACHE_TTL) {
-            setRates(cached.rates)
-            setLoading(false)
-            return
+            try {
+                const cached: CacheEntry = JSON.parse(cachedStr)
+                if (Date.now() - cached.timestamp < CACHE_TTL) {
+                setRates(cached.rates)
+                setLoading(false)
+                return
+                }
+            } catch {
+                localStorage.removeItem(CACHE_KEY)
             }
-        } catch {
-            localStorage.removeItem(CACHE_KEY)
-        }
         }
 
       setLoading(true)
@@ -104,7 +104,7 @@ export function useCurrencyFormatter() {
     } = options
 
     if (hideIfNotShown && !showAmounts) return placeholder
-    if (loading || !rates) return "..."
+    if (loading || !rates) return "loading..."
 
     const fromRate = rates[fromCurrency.code] ?? 1
     const toRate   = rates[currency.code]     ?? 1
@@ -131,5 +131,5 @@ export function useCurrencyFormatter() {
     }
   }
 
-  return { formatCurrency, loading }
+  return { formatCurrency, loading } 
 }

@@ -32,6 +32,7 @@ import {
 import Link from "next/link"
 import { signOut, useSession } from "next-auth/react"
 import { useTheme } from "next-themes"
+import { Skeleton } from "../ui/skeleton"
 
 export function SidebarUser() {
   const { isMobile } = useSidebar()
@@ -40,8 +41,21 @@ export function SidebarUser() {
 
   const user = session?.user
 
-  if (!user) {
-    return null
+    if (!user) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg" className="hover:cursor-default">
+            <Skeleton className="h-8 w-8 rounded-lg" />
+            <div className="grid flex-1 text-left text-sm leading-tight space-y-1">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-3 w-32" />
+            </div>
+            <Skeleton className="ml-auto h-4 w-4 rounded" />
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    )
   }
 
   return (
