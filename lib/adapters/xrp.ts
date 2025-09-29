@@ -34,9 +34,10 @@ export async function getBalances(address: string): Promise<Results> {
             status_ok: true,
             chain: "xrp",
             address,
-            balances: {
-                xrp
-            }
+            balances: [{
+                token: "XRP",
+                amount: xrp 
+            }],
         }
   } catch (error: unknown) {
     const err = error as AxiosError
@@ -48,7 +49,7 @@ export async function getBalances(address: string): Promise<Results> {
         status_ok: false,
         chain: "xrp",
         address,
-        error: err } // API route will wrap this with status_ok:false
+        error: err }
   } 
 }
 

@@ -143,11 +143,10 @@ export async function getBalances(address: string): Promise<Results> {
       status_ok: true,
       chain: "solana",
       address,
-      balances: {
-        sol: totalBalance,
-        native: nativeBalance,
-        staked: stakingBalance
-      }
+      balances: [{
+        token: "SOL",
+        amount: totalBalance,
+      }]
     }
   } catch (error: unknown) {
     const err = error as AxiosError
