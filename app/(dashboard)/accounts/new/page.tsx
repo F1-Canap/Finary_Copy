@@ -48,7 +48,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="p-6 w-full">
+    <div className="w-full">
       <main className="flex flex-col gap-8">
         {/* Header */}
         <div className="flex flex-col gap-2">

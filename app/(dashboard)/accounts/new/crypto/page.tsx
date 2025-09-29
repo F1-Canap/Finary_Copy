@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, FormEvent, ChangeEvent } from "react";
-import { TokenIcon, ExchangeIcon } from "@web3icons/react";
+import { TokenIcon, ExchangeIcon, WalletIcon } from "@web3icons/react";
 import {
   Card,
   CardHeader,
@@ -25,6 +25,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { ethers } from "ethers";
+import EthereumProvider from "@walletconnect/ethereum-provider";
 
 type Mode = "wallet" | "binance" | null;
 
@@ -111,47 +113,79 @@ export default function ConnectWalletPage() {
     }
   }
 
+    async function connectWallet() {
+      const wcProvider = await EthereumProvider.init({
+        projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
+        chains: [1], // Ethereum mainnet
+        showQrModal: true,
+      });
+  
+      await wcProvider.connect();
+  
+      const ethersProvider = new ethers.BrowserProvider(wcProvider);
+      const signer = await ethersProvider.getSigner();
+      const addr = await signer.getAddress();
+      setAddress(addr);
+        setMode("wallet");
+      setOpen(true);
+    }
+
   return (
-    <div className="p-6 w-full">
+    <div className="w-full">
       <h1 className="text-2xl font-bold mb-6">Connect Crypto Accounts</h1>
 
       {/* Mode selector cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full">
         <Card
-          className="hover:shadow-lg transition hover:scale-[1.02] cursor-pointer"
+          className="cursor-pointer"
+          onClick={connectWallet}
+        >
+          <CardHeader className="flex flex-col items-center justify-center ">
+            <WalletIcon id="wallet-connect" variant="branded" size="60" />
+            <CardTitle className="mt-3">Wallet Connect</CardTitle>
+            <CardDescription className="text-center">
+              Connect with Wallet Connect QR code
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex justify-center">
+            <Button variant="outline" className={`w-full text-primary border-primary hover:bg-primary hover:text-primary`}>Select</Button>
+          </CardContent>
+        </Card>
+        <Card
+          className="cursor-pointer"
           onClick={() => {
             setMode("wallet");
             setOpen(true);
           }}
         >
-          <CardHeader className="flex flex-col items-center justify-center">
-            <TokenIcon symbol="eth" variant="branded" size="40" />
+          <CardHeader className="flex flex-col items-center justify-center ">
+            <TokenIcon symbol="eth" variant="branded" size="60" />
             <CardTitle className="mt-3">Wallet</CardTitle>
             <CardDescription className="text-center">
               Connect your on-chain wallet address
             </CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center">
-            <Button variant="outline">Select</Button>
+            <Button variant="outline" className={`w-full text-primary border-primary hover:bg-primary hover:text-primary`}>Select</Button>
           </CardContent>
         </Card>
 
         <Card
-          className="hover:shadow-lg transition hover:scale-[1.02] cursor-pointer"
+          className="cursor-pointer"
           onClick={() => {
             setMode("binance");
             setOpen(true);
           }}
         >
           <CardHeader className="flex flex-col items-center justify-center">
-            <ExchangeIcon id="binance" variant="branded" size="40" />
+            <ExchangeIcon id="binance" variant="branded" size="60" />
             <CardTitle className="mt-3">Binance</CardTitle>
             <CardDescription className="text-center">
               Connect using your Binance API keys
             </CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center">
-            <Button variant="outline">Select</Button>
+            <Button variant="outline" className={`w-full text-primary border-primary hover:bg-primary hover:text-primary`}>Select</Button>
           </CardContent>
         </Card>
       </div>
