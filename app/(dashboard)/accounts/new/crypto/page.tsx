@@ -141,7 +141,16 @@ const binanceForm = useForm<BinanceFormValues>({
     async function connectWallet() {
       const wcProvider = await EthereumProvider.init({
         projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
-        chains: [1], // Ethereum mainnet
+        optionalChains: [
+            1,        // Ethereum
+            10,       // Optimism  
+            137,      // Polygon
+            56,       // BSC
+            42161,    // Arbitrum
+            8453,     // Base
+            43114,    // Avalanche
+            324,      // zkSync Era
+        ],
         showQrModal: true,
       });
   

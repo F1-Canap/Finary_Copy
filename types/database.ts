@@ -21,3 +21,13 @@ export interface User {
   createdAt: Date
   updatedAt: Date
 }
+
+export interface CryptoWallet{
+  _id?: string | ObjectId
+  userId: string | ObjectId
+  address: string
+  chain: string // e.g., "ethereum", "bitcoin"
+  balances: Record<string, number> // { "ETH": 0.5, "USDT": 100 }
+  createdAt: Date
+  updatedAt: Date
+}
