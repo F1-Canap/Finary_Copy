@@ -11,6 +11,7 @@ interface BinanceBalance {
 }
 
 interface BinanceAccountResponse {
+  uid: string,
   makerCommission: number
   takerCommission: number
   buyerCommission: number
@@ -59,8 +60,11 @@ export async function POST(req: NextRequest) {
       (b) => parseFloat(b.free) > 0 || parseFloat(b.locked) > 0
     )
 
+    const uid = res.data.uid || "anonymous"
+
     return NextResponse.json({
-      ok: true,
+      status_ok: true,
+      uid,
       balances,
     })
   } catch (err: unknown) {
