@@ -2,8 +2,7 @@
 export interface Results {
   status_ok: boolean,
   chain: string,
-  address: string,  
-  balance?: number
+  address: string, 
   balances?: Record<string, number> | { token: string; amount: number }[]
   error?: unknown
 }

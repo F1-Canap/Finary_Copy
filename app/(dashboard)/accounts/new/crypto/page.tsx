@@ -165,6 +165,7 @@ export default function ConnectWalletPage() {
         throw new Error("Wallet fetch returned status not OK")
       }
 
+      console.log("✅ Fetched wallet data:", data)
       // 2️⃣ Convertir le tableau balances en Record<string, number>
       const balances: Record<string, number> = {}
       for (const b of data.outputs.balances) {
@@ -174,6 +175,7 @@ export default function ConnectWalletPage() {
       if (!session?.user._id) {
         throw new Error("User session is not available")
       }
+
 
       // 3️⃣ Créer le wallet dans la DB
       const res2 = await apiClient.cryptoWallets.create({
