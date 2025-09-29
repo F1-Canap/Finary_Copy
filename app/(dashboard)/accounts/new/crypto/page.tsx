@@ -118,7 +118,7 @@ export default function ConnectWalletPage() {
   async function handleWalletSubmit() {
     const { chain, address } = walletForm.getValues();
     try {
-      const res = await fetch("/api/wallets", {
+      const res = await fetch("/api/accounts/crypto/wallets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chain, address }),
@@ -134,7 +134,7 @@ export default function ConnectWalletPage() {
   async function handleBinanceSubmit() {
     const { apiKey, secret } = binanceForm.getValues();
     try {
-      const res = await fetch("/api/binance", {
+      const res = await fetch("/api/accounts/crypto/binance", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ apiKey, secret }),
