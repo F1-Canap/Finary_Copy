@@ -30,7 +30,16 @@ import EthereumProvider from "@walletconnect/ethereum-provider";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Link2, Info } from "lucide-react";
+import Link from "next/link";
 
 type Mode = "wallet" | "binance" | null;
 
@@ -81,16 +90,16 @@ const BinanceFormSchema = z.object({
 });
 type BinanceFormValues = z.infer<typeof BinanceFormSchema>;
 
-
 export default function ConnectWalletPage() {
   const [mode, setMode] = useState<Mode>(null);
   const [open, setOpen] = useState(false);
+  const [binanceHelpOpen, setBinanceHelpOpen] = useState(false);
 
   const [result, setResult] = useState<WalletResponse | BinanceResponse | null>(
     null
   );
 
-    const walletForm = useForm<WalletFormValues>({
+  const walletForm = useForm<WalletFormValues>({
     resolver: zodResolver(WalletFormSchema),
     defaultValues: {
       chain: "",
@@ -98,7 +107,7 @@ export default function ConnectWalletPage() {
     },
   });
 
-const binanceForm = useForm<BinanceFormValues>({
+  const binanceForm = useForm<BinanceFormValues>({
     resolver: zodResolver(BinanceFormSchema),
     defaultValues: {
       apiKey: "",
@@ -137,7 +146,6 @@ const binanceForm = useForm<BinanceFormValues>({
       console.error("❌ Binance error:", err);
     }
   }
-
     async function connectWallet() {
       const wcProvider = await EthereumProvider.init({
         projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
@@ -169,11 +177,8 @@ const binanceForm = useForm<BinanceFormValues>({
       <h1 className="text-2xl font-bold mb-6">Connect Crypto Accounts</h1>
 
       {/* Mode selector cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full">
-        <Card
-          className="cursor-pointer"
-          onClick={connectWallet}
-        >
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+        <Card className="cursor-pointer" onClick={connectWallet}>
           <CardHeader className="flex flex-col items-center justify-center ">
             <WalletIcon id="wallet-connect" variant="branded" size="60" />
             <CardTitle className="mt-3">Wallet Connect</CardTitle>
@@ -182,9 +187,15 @@ const binanceForm = useForm<BinanceFormValues>({
             </CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center">
-            <Button variant="outline" className={`w-full text-primary border-primary hover:bg-primary hover:text-primary`}>Select</Button>
+            <Button
+              variant="outline"
+              className="w-full text-primary border-primary hover:bg-primary hover:text-primary"
+            >
+              Select
+            </Button>
           </CardContent>
         </Card>
+
         <Card
           className="cursor-pointer"
           onClick={() => {
@@ -200,7 +211,12 @@ const binanceForm = useForm<BinanceFormValues>({
             </CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center">
-            <Button variant="outline" className={`w-full text-primary border-primary hover:bg-primary hover:text-primary`}>Select</Button>
+            <Button
+              variant="outline"
+              className="w-full text-primary border-primary hover:bg-primary hover:text-primary"
+            >
+              Select
+            </Button>
           </CardContent>
         </Card>
 
@@ -213,18 +229,23 @@ const binanceForm = useForm<BinanceFormValues>({
         >
           <CardHeader className="flex flex-col items-center justify-center">
             <ExchangeIcon id="binance" variant="branded" size="60" />
-            <CardTitle className="mt-3">Binance</CardTitle>
+            <CardTitle className="mt-3">Binance Account</CardTitle>
             <CardDescription className="text-center">
               Connect using your Binance API keys
             </CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center">
-            <Button variant="outline" className={`w-full text-primary border-primary hover:bg-primary hover:text-primary`}>Select</Button>
+            <Button
+              variant="outline"
+              className="w-full text-primary border-primary hover:bg-primary hover:text-primary"
+            >
+              Select
+            </Button>
           </CardContent>
         </Card>
       </div>
 
-      {/* Dialog */}
+      {/* Main Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
@@ -240,54 +261,68 @@ const binanceForm = useForm<BinanceFormValues>({
 
           {mode === "wallet" && (
             <Form {...walletForm}>
-                <form
-                    onSubmit={walletForm.handleSubmit(handleWalletSubmit)}
-                    className="space-y-6 max-w-md w-full"
-                >
-                    {/* Chain select */}
-                    <FormField
-                    control={walletForm.control}
-                    name="chain"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel className="text-foreground">Blockchain</FormLabel>
-                        <Select
-                            value={field.value}
-                            onValueChange={field.onChange}
-                            required
-                        >
-                            <FormControl>
-                            <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Select a chain..." />
-                            </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                            {chainOptions.map((opt) => (
-                                <SelectItem key={opt.value} value={opt.value}>
-                                <div className="flex items-center gap-2">
-                                    <TokenIcon
+              <form
+                onSubmit={walletForm.handleSubmit(handleWalletSubmit)}
+                className="space-y-6 max-w-md w-full"
+              >
+                {/* Chain select */}
+                <FormField
+                  control={walletForm.control}
+                  name="chain"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-foreground">
+                        Blockchain
+                      </FormLabel>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        required
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a chain..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {chainOptions.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              <div className="flex items-center gap-2">
+                                {opt.symbol ? (
+                                  <TokenIcon
                                     symbol={opt.symbol}
                                     variant="branded"
                                     size="20"
-                                    />
-                                    {opt.label}
-                                </div>
-                                </SelectItem>
-                            ))}
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
+                                    fallback={
+                                      <Link2 className="w-4 h-4 text-muted-foreground" />
+                                    }
+                                  />
+                                ) : (
+                                  <Link2 className="w-4 h-4 text-muted-foreground" />
+                                )}
+                                {opt.label}
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                    {/* Wallet address */}
-                    <FormField
+                {/* Wallet address */}
+                <FormField
                     control={walletForm.control}
                     name="address"
                     render={({ field }) => (
                         <FormItem>
-                        <FormLabel className="text-foreground">Wallet Address</FormLabel>
+                        <FormLabel className="text-foreground flex items-center gap-2">
+                            Wallet Address
+                            <span className="text-xs text-muted-foreground">
+                            (Enter your public address, not your secret key)
+                            </span>
+                        </FormLabel>
                         <FormControl>
                             <Input
                             type="text"
@@ -299,69 +334,127 @@ const binanceForm = useForm<BinanceFormValues>({
                         <FormMessage />
                         </FormItem>
                     )}
-                    />
+                />
 
-                    {/* Submit button */}
-                    <Button type="submit" className="w-full bg-primary text-primary-foreground">
-                    Connect Wallet
-                    </Button>
-                </form>
-                </Form>
+                <Button
+                  type="submit"
+                  className="w-full bg-primary text-primary-foreground"
+                >
+                  Connect Wallet
+                </Button>
+              </form>
+            </Form>
           )}
 
           {mode === "binance" && (
             <Form {...binanceForm}>
-                <form
-                    onSubmit={binanceForm.handleSubmit(handleBinanceSubmit)}
-                    className="space-y-6 max-w-md w-full"
+              <form
+                onSubmit={binanceForm.handleSubmit(handleBinanceSubmit)}
+                className="space-y-6 max-w-md w-full"
+              >
+                {/* API Key */}
+                <FormField
+                  control={binanceForm.control}
+                  name="apiKey"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-foreground flex items-center gap-2">
+                        API Key
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setBinanceHelpOpen(true)}
+                        >
+                          <Info className="w-4 h-4" />
+                        </Button>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="text"
+                          placeholder="Enter your API Key"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* API Secret */}
+                <FormField
+                  control={binanceForm.control}
+                  name="secret"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-foreground">
+                        API Secret
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder="Enter your API Secret"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Button
+                  type="submit"
+                  className="w-full bg-primary text-primary-foreground"
                 >
-                    {/* API Key */}
-                    <FormField
-                    control={binanceForm.control}
-                    name="apiKey"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel className="text-foreground">API Key</FormLabel>
-                        <FormControl>
-                            <Input
-                            type="text"
-                            placeholder="Enter your API Key"
-                            {...field}
-                            className="w-full"
-                            />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-
-                    {/* API Secret */}
-                    <FormField
-                    control={binanceForm.control}
-                    name="secret"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel className="text-foreground">API Secret</FormLabel>
-                        <FormControl>
-                            <Input
-                            type="password"
-                            placeholder="Enter your API Secret"
-                            {...field}
-                            className="w-full"
-                            />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-
-                    {/* Submit button */}
-                    <Button type="submit" className="w-full bg-primary text-primary-foreground">
-                    Connect Binance
-                    </Button>
-                </form>
-                </Form>
+                  Connect Binance
+                </Button>
+              </form>
+            </Form>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Nested Binance Help Dialog */}
+      <Dialog open={binanceHelpOpen} onOpenChange={setBinanceHelpOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>How to get your Binance API keys</DialogTitle>
+            <DialogDescription>
+              Quick steps to create an API key on Binance:
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 text-sm">
+            <ol className="list-decimal list-inside space-y-2">
+              <li>Log in to your Binance account.</li>
+              <li>
+                Click your profile icon and go to <strong>API Management</strong>.
+              </li>
+              <li>
+                Click <strong>Create API</strong>, name it (e.g., MyPortfolioApp).
+              </li>
+              <li>
+                Complete the required 2FA / email confirmations.
+              </li>
+              <li>
+                Copy the API Key and Secret and store them securely (Secret is
+                only shown once).
+              </li>
+              <li>
+                For safety, use <em>Read-only</em> permissions and set IP
+                restrictions if possible.
+              </li>
+            </ol>
+            <p className="text-xs text-muted-foreground">
+              Full instructions are available on Binance’s Help Center.
+            </p>
+            <Link
+              href="https://www.binance.com/en/support/faq/detail/360002502072"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Button variant="outline">Open Binance Help</Button>
+            </Link>
+          </div>
         </DialogContent>
       </Dialog>
 
