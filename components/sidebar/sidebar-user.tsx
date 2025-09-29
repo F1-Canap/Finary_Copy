@@ -1,0 +1,173 @@
+"use client"
+
+import {
+  ChevronsUpDown,
+  Laptop,
+  LogOut,
+  Moon,
+  Settings2,
+  Sun,
+  User as UserIcon,
+} from "lucide-react"
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/components/ui/sidebar"
+import Link from "next/link"
+import { signOut, useSession } from "next-auth/react"
+import { useTheme } from "next-themes"
+import { Skeleton } from "../ui/skeleton"
+
+export function SidebarUser() {
+  const { isMobile } = useSidebar()
+  const { data: session } = useSession()
+  const { setTheme, theme } = useTheme()
+
+  const user = session?.user
+
+    if (!user) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg" className="hover:cursor-default">
+            <Skeleton className="h-8 w-8 rounded-lg" />
+            <div className="grid flex-1 text-left text-sm leading-tight space-y-1">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-3 w-32" />
+            </div>
+            <Skeleton className="ml-auto h-4 w-4 rounded" />
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    )
+  }
+
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <SidebarMenuButton
+              size="lg"
+              className="hover:cursor-pointer transition duration-200"
+            >
+              <Avatar className="h-8 w-8 rounded-lg">
+                <AvatarImage src={user.image ?? ""} alt={user.name ?? ""} />
+                <AvatarFallback className="rounded-lg">
+                  {user.name?.slice(0, 2).toUpperCase() ?? "?"}
+                </AvatarFallback>
+              </Avatar>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-medium">
+                  {user.name}
+                </span>
+                <span className="truncate text-xs">{user.email}</span>
+              </div>
+              <ChevronsUpDown className="ml-auto size-4" />
+            </SidebarMenuButton>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent
+            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+            side={isMobile ? "bottom" : "right"}
+            align="end"
+            sideOffset={4}
+          >
+            {/* Header utilisateur */}
+            <DropdownMenuLabel className="p-0 font-normal">
+              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                <Avatar className="h-8 w-8 rounded-lg">
+                  <AvatarImage src={user.image ?? ""} alt={user.name ?? ""} />
+                  <AvatarFallback className="rounded-lg">
+                    {user.name?.slice(0, 2).toUpperCase() ?? "?"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">
+                    {user.name}
+                  </span>
+                  <span className="truncate text-xs">{user.email}</span>
+                </div>
+              </div>
+            </DropdownMenuLabel>
+
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <Link href="/profile">
+                <DropdownMenuItem className="cursor-pointer">
+                  <UserIcon className="h-4 w-4" />
+                  Profile
+                </DropdownMenuItem>
+              </Link>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger className="cursor-pointer">
+                <Sun className="mr-2 h-4 w-4" />
+                Thème
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem
+                  onClick={() => setTheme("light")}
+                  className={theme === "light" ? "bg-accent" : ""}
+                >
+                  <Sun className="mr-2 h-4 w-4" />
+                  Clair
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setTheme("dark")}
+                  className={theme === "dark" ? "bg-accent" : ""}
+                >
+                  <Moon className="mr-2 h-4 w-4" />
+                  Sombre
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setTheme("system")}
+                  className={theme === "system" ? "bg-accent" : ""}
+                >
+                  <Laptop className="mr-2 h-4 w-4" />
+                  Système
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuGroup>
+              <Link href="/settings">
+                <DropdownMenuItem className="cursor-pointer">
+                  <Settings2 className="h-4 w-4" />
+                  Settings
+                </DropdownMenuItem>
+              </Link>
+            </DropdownMenuGroup>
+
+            <DropdownMenuSeparator />
+
+            {/* Déconnexion */}
+            <DropdownMenuItem
+              onClick={() => signOut({ callbackUrl: "/login" })}
+              className="cursor-pointer flex items-center"
+            >
+              <LogOut className="mr-2 h-4 w-4 text-red-400" />
+              Log Out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  )
+}
