@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TokenIcon, ExchangeIcon, WalletIcon } from "@web3icons/react";
 import {
   Card,
@@ -42,14 +42,25 @@ import { Link2, Info } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { apiClient } from "@/lib/apiClient";
+import { Session } from "next-auth";
+import { getSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type Mode = "wallet" | "binance" | null;
+interface WalletBalance {
+  token: string
+  amount: number
+}
 
+interface WalletOutputs {
+  status_ok: boolean
+  chain: string
+  address: string
+  balances: WalletBalance[]
+}
 interface WalletResponse {
-  ok: boolean;
-  chain: string;
-  address: string;
-  balances?: unknown;
+  outputs: WalletOutputs
 }
 
 interface BinanceResponse {
@@ -93,9 +104,11 @@ const BinanceFormSchema = z.object({
 type BinanceFormValues = z.infer<typeof BinanceFormSchema>;
 
 export default function ConnectWalletPage() {
+  const [session, setSession] = useState<Session | null>(null);
   const [mode, setMode] = useState<Mode>(null);
   const [open, setOpen] = useState(false);
   const [binanceHelpOpen, setBinanceHelpOpen] = useState(false);
+    const router = useRouter();
 
   const [result, setResult] = useState<WalletResponse | BinanceResponse | null>(
     null
@@ -117,19 +130,74 @@ export default function ConnectWalletPage() {
     },
   });
 
+  useEffect(() => {
+      async function fetchSession() {
+        const sess = await getSession();
+        if (!sess) {
+          router.push("/login"); // redirect is server-only, so use router.push
+        } else {
+          console.log(sess)
+          setSession(sess);
+        }
+      }
+      fetchSession();
+    }, [router]);
+
+
   async function handleWalletSubmit() {
-    const { chain, address } = walletForm.getValues();
+    const { chain, address } = walletForm.getValues()
+
     try {
+      // 1️⃣ Récupérer les données du wallet depuis l’API
       const res = await fetch("/api/accounts/crypto/wallets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chain, address }),
-      });
-      const data: WalletResponse = await res.json();
-      setResult(data);
-      setOpen(false);
-    } catch (err) {
-      console.error("❌ Wallet error:", err);
+      })
+
+      if (!res.ok) {
+        throw new Error(`Wallet fetch failed with status ${res.status}`)
+      }
+
+      const data: WalletResponse = await res.json()
+
+      if (!data.outputs.status_ok) {
+        throw new Error("Wallet fetch returned status not OK")
+      }
+
+      // 2️⃣ Convertir le tableau balances en Record<string, number>
+      const balances: Record<string, number> = {}
+      for (const b of data.outputs.balances) {
+        balances[b.token] = b.amount
+      }
+
+      if (!session?.user._id) {
+        throw new Error("User session is not available")
+      }
+
+      // 3️⃣ Créer le wallet dans la DB
+      const res2 = await apiClient.cryptoWallets.create({
+        chain,
+        address,
+        userId: session.user._id,
+        balances,
+      })
+
+      if (res2.success) {
+        toast.success("Wallet ajouté avec succès ✅")
+        console.log("✅ Created wallet in DB:", res2.data)
+      } else {
+        toast.error(`Erreur lors de la création du wallet: ${res2.error}`)
+        console.error("❌ Wallet DB save error:", res2.error)
+      }
+
+      // 4️⃣ Mise à jour UI
+      setResult(data)
+      setOpen(false)
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err)
+      toast.error(`Erreur wallet: ${message}`)
+      console.error("❌ Wallet error:", err)
     }
   }
 
