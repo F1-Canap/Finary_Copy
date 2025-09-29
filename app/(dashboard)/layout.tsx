@@ -34,7 +34,7 @@ export default function RootLayout({
                 <Link href="/accounts/new">
                   <Button variant="default">
                     <Plus className="mr-2 h-4 w-4" />
-                    Ajouter un compte
+                    Add an account
                   </Button>
                 </Link>
               </div>

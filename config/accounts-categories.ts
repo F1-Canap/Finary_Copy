@@ -6,6 +6,9 @@ export type AccountCategory = {
   name: string;
   icon: LucideIcon;
   description?: string;
+  href: string; // link to the category page
+  badge?: string; // small label (e.g., "Soon", "Popular")
+  comingSoon?: boolean; // disables link if true
 };
 
 export const accountCategories: AccountCategory[] = [
@@ -13,18 +16,26 @@ export const accountCategories: AccountCategory[] = [
     id: "crypto",
     name: "Crypto",
     icon: Bitcoin,
-    description: "Investissements en cryptomonnaies (Bitcoin, Ethereum, etc.)",
+    description: "Investments in cryptocurrencies",
+    href: "/accounts/crypto",
+    badge: "Popular",
   },
   {
     id: "bank",
-    name: "Comptes bancaires",
+    name: "Bank Accounts",
     icon: Banknote,
-    description: "Dépôts, comptes courants et comptes épargne",
+    description: "Checking accounts, savings, and deposits",
+    href: "/accounts/bank",
+    badge: "Coming Soon",
+    comingSoon: true,
   },
   {
     id: "watches",
-    name: "Montres",
+    name: "Watches",
     icon: Clock,
-    description: "Montres de luxe et objets horlogers de collection",
+    description: "Luxury watches and collectible timepieces",
+    href: "/accounts/watches",
+    badge: "Coming Soon",
+    comingSoon: true,
   },
 ];
