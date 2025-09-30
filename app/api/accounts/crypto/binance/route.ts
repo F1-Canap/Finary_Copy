@@ -1,82 +1,83 @@
-// app/api/binance/route.ts
-import { NextRequest, NextResponse } from "next/server"
-import axios, { AxiosResponse } from "axios"
-import crypto from "crypto"
+import { NextResponse } from "next/server"
+import { BinanceService } from "@/services/binance/binance.service"
 
-// Types for Binance balances
-interface BinanceBalance {
-  asset: string
-  free: string
-  locked: string
-}
-
-interface BinanceAccountResponse {
-  uid: string,
-  makerCommission: number
-  takerCommission: number
-  buyerCommission: number
-  sellerCommission: number
-  canTrade: boolean
-  canWithdraw: boolean
-  canDeposit: boolean
-  updateTime: number
-  accountType: string
-  balances: BinanceBalance[]
-  permissions: string[]
-}
-
-export async function POST(req: NextRequest) {
+// 📌 Créer un compte Binance
+export async function POST(req: Request) {
   try {
-    // Read body from frontend
-    const body = (await req.json()) as { apiKey: string; secret: string }
-    const { apiKey, secret } = body
+    const { apiKey, secretKey, userId } = await req.json()
 
-    if (!apiKey || !secret) {
+    if (!apiKey || !secretKey || !userId) {
       return NextResponse.json(
-        { ok: false, error: "API key and secret are required" },
+        { success: false, error: "Champs manquants (apiKey, secretKey, userId)" },
         { status: 400 }
       )
     }
 
-    // Create Binance signature
-    const timestamp = Date.now()
-    const queryString = `timestamp=${timestamp}`
-    const signature = crypto
-      .createHmac("sha256", secret)
-      .update(queryString)
-      .digest("hex")
+    // Appel au service → création + récupération balances
+    const result = await BinanceService.create({
+      api_key: apiKey,
+      secret_key: secretKey,
+      userId,
+    })
 
-    const url = `https://api.binance.com/api/v3/account?${queryString}&signature=${signature}`
+    if (!result.success || !result.data) {
+      return NextResponse.json(
+        { ok: false, error: result.error || "Account not found" },
+        { status: 400 }
+      );
+    }
 
-    // Call Binance API
-    const res: AxiosResponse<BinanceAccountResponse> = await axios.get(url, {
-      headers: {
-        "X-MBX-APIKEY": apiKey,
+    // ⚠️ Ne jamais renvoyer les clés → juste uid + tokens
+    return NextResponse.json({
+      success: true,
+      data: {
+        uid: result.data.uid,
+        tokens: result.data.tokens,
       },
     })
-
-    // Filter non-empty balances
-    const balances = res.data.balances.filter(
-      (b) => parseFloat(b.free) > 0 || parseFloat(b.locked) > 0
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: `Erreur POST Binance: ${error}` },
+      { status: 500 }
     )
+  }
+}
 
-    const uid = res.data.uid || "anonymous"
+// 📌 Récupérer les comptes Binance par userId
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url)
+    const userId = searchParams.get("userId")
 
-    return NextResponse.json({
-      status_ok: true,
-      uid,
-      balances,
-    })
-  } catch (err: unknown) {
-    if (axios.isAxiosError(err)) {
+    if (!userId) {
       return NextResponse.json(
-        { ok: false, error: err.response?.data || err.message },
-        { status: err.response?.status || 500 }
+        { success: false, error: "Paramètre userId manquant" },
+        { status: 400 }
       )
     }
 
+    const result = await BinanceService.findByUserId(userId)
+
+    if (!result.success || !result.data) {
+      return NextResponse.json(
+        { ok: false, error: result.error || "Account not found" },
+        { status: 400 }
+      );
+    }
+
+    // ⚠️ Masquer api_key / secret_key
+    const safeData = result.data.map((acc) => ({
+      _id: acc._id,
+      uid: acc.uid,
+      tokens: acc.tokens,
+      createdAt: acc.createdAt,
+      updatedAt: acc.updatedAt,
+    }))
+
+    return NextResponse.json({ success: true, data: safeData })
+  } catch (error) {
     return NextResponse.json(
-      { ok: false, error: "Unexpected error" },
+      { success: false, error: `Erreur GET Binance: ${error}` },
       { status: 500 }
     )
   }

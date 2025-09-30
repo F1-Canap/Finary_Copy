@@ -31,3 +31,15 @@ export interface CryptoWallet{
   createdAt: Date
   updatedAt: Date
 }
+
+export interface BinanceAccount {
+  _id?: string | ObjectId
+  userId: string | ObjectId
+  api_key: string | null
+  api_key_hash?: string
+  secret_key: string | null
+  uid: string
+  tokens: Record<string, number>
+  createdAt: Date
+  updatedAt: Date
+}

@@ -108,7 +108,7 @@ export default function ConnectWalletPage() {
   const [mode, setMode] = useState<Mode>(null);
   const [open, setOpen] = useState(false);
   const [binanceHelpOpen, setBinanceHelpOpen] = useState(false);
-    const router = useRouter();
+  const router = useRouter();
 
   const [result, setResult] = useState<WalletResponse | BinanceResponse | null>(
     null
@@ -196,6 +196,8 @@ export default function ConnectWalletPage() {
         console.error("❌ Wallet DB save error:", res2.error)
       }
 
+      walletForm.reset()
+
       // 4️⃣ Mise à jour UI
       setResult(data)
       setOpen(false)
@@ -206,21 +208,52 @@ export default function ConnectWalletPage() {
     }
   }
 
-  async function handleBinanceSubmit() {
-    const { apiKey, secret } = binanceForm.getValues();
-    try {
-      const res = await fetch("/api/accounts/crypto/binance", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ apiKey, secret }),
-      });
-      const data: BinanceResponse = await res.json();
-      setResult(data);
-      setOpen(false);
-    } catch (err) {
-      console.error("❌ Binance error:", err);
+    async function handleBinanceSubmit() {
+        const { apiKey, secret } = binanceForm.getValues();
+
+        try {
+            if (!session?.user._id) {
+            throw new Error("User session is not available");
+            }
+
+            // 1️⃣ Call API with correct field name
+            const res = await fetch("/api/accounts/crypto/binance", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                apiKey,
+                secretKey: secret,  // ✅ Changed from 'secret' to 'secretKey'
+                userId: session.user._id,
+            }),
+            });
+
+            if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.error || `Binance fetch failed with status ${res.status}`);
+            }
+
+            const data = await res.json();
+
+            // 2️⃣ Check response (API returns { success, data })
+            if (!data.success || !data.data) {
+            throw new Error(data.error || "Binance account creation failed");
+            }
+
+            // ✅ No duplicate DB call needed - API route already handled it
+            toast.success("Binance account ajouté avec succès ✅");
+
+            binanceForm.reset();
+            
+            // 3️⃣ Update UI
+            setResult(data);
+            setOpen(false);
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : String(err);
+            toast.error(`Erreur Binance: ${message}`);
+            console.error("❌ Binance error:", err);
+        }
     }
-  }
+
     async function connectWallet() {
       const wcProvider = await EthereumProvider.init({
         projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,

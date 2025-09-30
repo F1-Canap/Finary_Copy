@@ -1,4 +1,4 @@
-import type { CryptoWallet, DatabaseResponse, PaginationOptions } from "@/types/database"
+import type { CryptoWallet, DatabaseResponse, PaginationOptions, BinanceAccount } from "@/types/database"
 
 class ApiClient {
   private async request<T>(url: string, options?: RequestInit): Promise<DatabaseResponse<T>> {
@@ -58,6 +58,43 @@ class ApiClient {
 
     delete: (id: string) =>
       this.request<boolean>(`/api/accounts/crypto/${id}`, {
+        method: "DELETE",
+      }),
+  }
+
+    // 📌 Ressource Binance Accounts
+  binanceAccounts = {
+    getAll: (options?: PaginationOptions) => {
+      const params = new URLSearchParams();
+      if (options?.page) params.append("page", options.page.toString());
+      if (options?.limit) params.append("limit", options.limit.toString());
+      if (options?.sortBy) params.append("sortBy", options.sortBy);
+      if (options?.sortOrder) params.append("sortOrder", options.sortOrder);
+
+      return this.request<BinanceAccount[]>(`/api/accounts/crypto/binance?${params}`);
+    },
+
+    getById: (id: string) => this.request<BinanceAccount>(`/api/accounts/crypto/binance/${id}`),
+
+    getByUserId: (userId: string) => {
+      const params = new URLSearchParams({ userId });
+      return this.request<BinanceAccount[]>(`/api/accounts/crypto/binance?${params}`);
+    },
+
+    create: (account: Omit<BinanceAccount, "_id" | "createdAt" | "updatedAt">) =>
+      this.request<BinanceAccount>("/api/accounts/crypto/binance", {
+        method: "POST",
+        body: JSON.stringify(account),
+      }),
+
+    update: (id: string, updates: Partial<BinanceAccount>) =>
+      this.request<BinanceAccount>(`/api/accounts/crypto/binance/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(updates),
+      }),
+
+    delete: (id: string) =>
+      this.request<boolean>(`/api/accounts/crypto/binance/${id}`, {
         method: "DELETE",
       }),
   }
