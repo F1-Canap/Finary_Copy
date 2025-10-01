@@ -43,3 +43,15 @@ export interface BinanceAccount {
   createdAt: Date
   updatedAt: Date
 }
+
+export interface Watch {
+  _id?: string | ObjectId
+  userId: string | ObjectId
+  brand: string
+  model: string
+  reference?: string
+  production_year?: string
+  buy_price?: number
+  createdAt: Date
+  updatedAt: Date
+}

@@ -35,7 +35,6 @@ export const accountCategories: AccountCategory[] = [
     icon: Clock,
     description: "Luxury watches and collectible timepieces",
     href: "/accounts/new/watches",
-    badge: "Coming Soon",
-    comingSoon: true,
+    badge: "New",
   },
 ];

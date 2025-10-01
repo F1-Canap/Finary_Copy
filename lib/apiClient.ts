@@ -1,4 +1,4 @@
-import type { CryptoWallet, DatabaseResponse, PaginationOptions, BinanceAccount } from "@/types/database"
+import type { CryptoWallet, DatabaseResponse, PaginationOptions, BinanceAccount, Watch } from "@/types/database"
 
 class ApiClient {
   private async request<T>(url: string, options?: RequestInit): Promise<DatabaseResponse<T>> {
@@ -95,6 +95,43 @@ class ApiClient {
 
     delete: (id: string) =>
       this.request<boolean>(`/api/accounts/crypto/binance/${id}`, {
+        method: "DELETE",
+      }),
+  }
+
+    // 📌 Ressource Watches
+  watches = {
+    getAll: (options?: PaginationOptions) => {
+      const params = new URLSearchParams()
+      if (options?.page) params.append("page", options.page.toString())
+      if (options?.limit) params.append("limit", options.limit.toString())
+      if (options?.sortBy) params.append("sortBy", options.sortBy)
+      if (options?.sortOrder) params.append("sortOrder", options.sortOrder)
+
+      return this.request<Watch[]>(`/api/accounts/watches?${params}`)
+    },
+
+    getById: (id: string) => this.request<Watch>(`/api/accounts/watches/${id}`),
+
+    getByUserId: (userId: string) => {
+      const params = new URLSearchParams({ userId })
+      return this.request<Watch[]>(`/api/accounts/watches?${params}`)
+    },
+
+    create: (watch: Omit<Watch, "_id" | "createdAt" | "updatedAt">) =>
+      this.request<Watch>("/api/accounts/watches", {
+        method: "POST",
+        body: JSON.stringify(watch),
+      }),
+
+    update: (id: string, updates: Partial<Watch>) =>
+      this.request<Watch>(`/api/accounts/watches/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(updates),
+      }),
+
+    delete: (id: string) =>
+      this.request<boolean>(`/api/accounts/watches/${id}`, {
         method: "DELETE",
       }),
   }
