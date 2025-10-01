@@ -140,7 +140,7 @@ export class BinanceService {
         api_key_hash: apiKeyHash, 
         secret_key: encrypt(account.secret_key),
         uid: binanceData.uid,
-        tokens,
+        balances: tokens,
         createdAt: now,
         updatedAt: now,
       })
