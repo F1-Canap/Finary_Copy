@@ -1,6 +1,6 @@
 import { Connection, PublicKey } from "@solana/web3.js"
 import axios, { AxiosError } from "axios"
-import { Results } from "./types"
+import { Results } from "@/types/adapters";
 
 const RPC_URL = "https://api.mainnet-beta.solana.com"
 const MORALIS_API_KEY = process.env.MORALIS_API_KEY as string

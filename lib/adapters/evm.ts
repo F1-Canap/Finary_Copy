@@ -1,7 +1,7 @@
 // /chains/evm.ts
 import axios, { AxiosError } from "axios"
 import "dotenv/config"
-import { Results, ChainAdapter } from "./types"
+import { Results, ChainAdapter } from "@/types/adapters";
 
 const MORALIS_API_KEY = process.env.MORALIS_API_KEY as string
 const BASE = "https://deep-index.moralis.io/api/v2.2"

@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios"
-import { Results } from "./types";
+import { Results } from "@/types/adapters";
 
 const GETBLOCK_URL = process.env.GETBLOCK_API_URL
 

@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios"
-import { Results } from "./types"
+import { Results } from "@/types/adapters";
 
 const BLOCKFROST_API_KEY = process.env.BLOCKFROST_API_KEY as string
 const BASE = "https://cardano-mainnet.blockfrost.io/api/v0"

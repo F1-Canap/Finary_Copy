@@ -1,5 +1,6 @@
+import { Results } from "@/types/adapters";
 import axios from "axios";
-import { Results } from "./types";
+
 
 export async function getBalances(address: string): Promise<Results> {
   try {

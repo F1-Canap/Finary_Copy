@@ -4,7 +4,7 @@ import * as solana from "./solana"
 import * as evm from "./evm"
 import * as xrp from "./xrp"
 
-import { ChainAdapter } from "./types"
+import { ChainAdapter } from "@/types/adapters";
 
 // Map of non-EVM chain adapters
 export const chains: Record<string, ChainAdapter> = {
