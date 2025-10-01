@@ -1,4 +1,4 @@
-import type { CryptoWallet, DatabaseResponse, PaginationOptions, BinanceAccount, Watch } from "@/types/database"
+import type { CryptoWallet, DatabaseResponse, PaginationOptions, BinanceAccount, Watch, Requisition, Account } from "@/types/database"
 
 class ApiClient {
   private async request<T>(url: string, options?: RequestInit): Promise<DatabaseResponse<T>> {
@@ -98,43 +98,117 @@ class ApiClient {
         method: "DELETE",
       }),
   }
+// 📌 Ressource Watches
+watches = {
+  getAll: (options?: PaginationOptions) => {
+    const params = new URLSearchParams()
+    if (options?.page) params.append("page", options.page.toString())
+    if (options?.limit) params.append("limit", options.limit.toString())
+    if (options?.sortBy) params.append("sortBy", options.sortBy)
+    if (options?.sortOrder) params.append("sortOrder", options.sortOrder)
 
-    // 📌 Ressource Watches
-  watches = {
-    getAll: (options?: PaginationOptions) => {
-      const params = new URLSearchParams()
-      if (options?.page) params.append("page", options.page.toString())
-      if (options?.limit) params.append("limit", options.limit.toString())
-      if (options?.sortBy) params.append("sortBy", options.sortBy)
-      if (options?.sortOrder) params.append("sortOrder", options.sortOrder)
+    return this.request<Watch[]>(`/api/accounts/watches?${params}`)
+  },
 
-      return this.request<Watch[]>(`/api/accounts/watches?${params}`)
-    },
+  getById: (id: string) => this.request<Watch>(`/api/accounts/watches/${id}`),
 
-    getById: (id: string) => this.request<Watch>(`/api/accounts/watches/${id}`),
+  getByUserId: (userId: string) => {
+    const params = new URLSearchParams({ userId })
+    return this.request<Watch[]>(`/api/accounts/watches?${params}`)
+  },
 
-    getByUserId: (userId: string) => {
-      const params = new URLSearchParams({ userId })
-      return this.request<Watch[]>(`/api/accounts/watches?${params}`)
-    },
+  create: (watch: Omit<Watch, "_id" | "createdAt" | "updatedAt">) =>
+    this.request<Watch>("/api/accounts/watches", {
+      method: "POST",
+      body: JSON.stringify(watch),
+    }),
 
-    create: (watch: Omit<Watch, "_id" | "createdAt" | "updatedAt">) =>
-      this.request<Watch>("/api/accounts/watches", {
-        method: "POST",
-        body: JSON.stringify(watch),
-      }),
+  update: (id: string, updates: Partial<Watch>) =>
+    this.request<Watch>(`/api/accounts/watches/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(updates),
+    }),
 
-    update: (id: string, updates: Partial<Watch>) =>
-      this.request<Watch>(`/api/accounts/watches/${id}`, {
-        method: "PUT",
-        body: JSON.stringify(updates),
-      }),
+  delete: (id: string) =>
+    this.request<boolean>(`/api/accounts/watches/${id}`, {
+      method: "DELETE",
+    }),
+}
 
-    delete: (id: string) =>
-      this.request<boolean>(`/api/accounts/watches/${id}`, {
-        method: "DELETE",
-      }),
-  }
+// 📌 Ressource Accounts
+accounts = {
+  getAll: (options?: PaginationOptions) => {
+    const params = new URLSearchParams()
+    if (options?.page) params.append("page", options.page.toString())
+    if (options?.limit) params.append("limit", options.limit.toString())
+    if (options?.sortBy) params.append("sortBy", options.sortBy)
+    if (options?.sortOrder) params.append("sortOrder", options.sortOrder)
+
+    return this.request<Account[]>(`/api/accounts?${params}`)
+  },
+
+  getById: (id: string) => this.request<Account>(`/api/accounts/${id}`),
+
+  getByUserId: (userId: string) => {
+    const params = new URLSearchParams({ userId })
+    return this.request<Account[]>(`/api/accounts?${params}`)
+  },
+
+  create: (account: Omit<Account, "_id" | "createdAt" | "updatedAt">) =>
+    this.request<Account>("/api/accounts", {
+      method: "POST",
+      body: JSON.stringify(account),
+    }),
+
+  update: (id: string, updates: Partial<Account>) =>
+    this.request<Account>(`/api/accounts/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(updates),
+    }),
+
+  delete: (id: string) =>
+    this.request<boolean>(`/api/accounts/${id}`, {
+      method: "DELETE",
+    }),
+}
+
+// 📌 Ressource Requisitions
+requisitions = {
+  getAll: (options?: PaginationOptions) => {
+    const params = new URLSearchParams()
+    if (options?.page) params.append("page", options.page.toString())
+    if (options?.limit) params.append("limit", options.limit.toString())
+    if (options?.sortBy) params.append("sortBy", options.sortBy)
+    if (options?.sortOrder) params.append("sortOrder", options.sortOrder)
+
+    return this.request<Requisition[]>(`/api/accounts/bank/requisition?${params}`)
+  },
+
+  getById: (id: string) => this.request<Requisition>(`/api/accounts/bank/requisition/${id}`),
+
+  getByUserId: (userId: string) => {
+    const params = new URLSearchParams({ userId })
+    return this.request<Requisition[]>(`/api/accounts/bank/requisition?${params}`)
+  },
+
+  create: (req: Omit<Requisition, "_id" | "createdAt" | "updatedAt">) =>
+    this.request<Requisition>("/api/accounts/bank/requisition", {
+      method: "POST",
+      body: JSON.stringify(req),
+    }),
+
+  update: (id: string, updates: Partial<Requisition>) =>
+    this.request<Requisition>(`/api/accounts/bank/requisition/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(updates),
+    }),
+
+  delete: (id: string) =>
+    this.request<boolean>(`/api/accounts/bank/requisition/${id}`, {
+      method: "DELETE",
+    }),
+}
+
 }
 
 export const apiClient = new ApiClient()

@@ -56,3 +56,26 @@ export interface Watch {
   createdAt: Date
   updatedAt: Date
 }
+
+export type Account = {
+  _id?: string | ObjectId,
+  requisitionId: string,
+  userId: string
+  name: string
+  type: "investment" | "savings" | "checking"
+  iban?: string
+  currency: string
+  balance: number
+  status?: "ready" | "processing"
+  lastUpdated: string
+  createdAt?: Date
+  updatedAt?: Date
+}
+
+export type Requisition = {
+  _id?: string | ObjectId,
+  requisitionID: string,
+  userId:string,
+  createdAt?: Date,
+  updatedAt?: Date,
+}

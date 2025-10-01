@@ -26,8 +26,6 @@ export const accountCategories: AccountCategory[] = [
     icon: Banknote,
     description: "Checking accounts, savings, and deposits",
     href: "/accounts/new/bank",
-    badge: "Coming Soon",
-    comingSoon: true,
   },
   {
     id: "watches",

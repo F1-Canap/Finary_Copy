@@ -29,6 +29,7 @@ const BREADCRUMB_LABELS: BreadcrumbConfig = {
   about: "About",
   new: "Add New",
   crypto: "Crypto Wallets",
+  bank:"Bank Account"
   // Exemples spécifiques
 
 }
