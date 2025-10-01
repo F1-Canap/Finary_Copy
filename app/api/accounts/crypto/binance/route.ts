@@ -32,7 +32,7 @@ export async function POST(req: Request) {
       success: true,
       data: {
         uid: result.data.uid,
-        tokens: result.data.tokens,
+        tokens: result.data.balances,
       },
     })
   } catch (error) {
@@ -69,7 +69,7 @@ export async function GET(req: Request) {
     const safeData = result.data.map((acc) => ({
       _id: acc._id,
       uid: acc.uid,
-      tokens: acc.tokens,
+      tokens: acc.balances,
       createdAt: acc.createdAt,
       updatedAt: acc.updatedAt,
     }))

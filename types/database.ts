@@ -39,7 +39,7 @@ export interface BinanceAccount {
   api_key_hash?: string
   secret_key: string | null
   uid: string
-  tokens: Record<string, number>
+  balances: Record<string, number>
   createdAt: Date
   updatedAt: Date
 }
@@ -51,7 +51,8 @@ export interface Watch {
   model: string
   reference?: string
   production_year?: string
-  buy_price?: number
+  buy_price: number
+  current_value?: number
   createdAt: Date
   updatedAt: Date
 }

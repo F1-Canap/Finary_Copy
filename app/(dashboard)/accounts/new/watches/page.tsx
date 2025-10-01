@@ -95,7 +95,7 @@ export default function NewWatchPage() {
         model: values.model,
         reference: values.reference || undefined,
         production_year: values.production_year || undefined,
-        buy_price: values.buy_price ? Number(values.buy_price) : undefined,
+        buy_price: Number(values.buy_price),
       })
       
 
@@ -230,7 +230,7 @@ export default function NewWatchPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-foreground">
-                      Buy Price (in EUR - optional)
+                      Buy Price (in EUR)
                     </FormLabel>
                     <FormControl>
                       <Input
