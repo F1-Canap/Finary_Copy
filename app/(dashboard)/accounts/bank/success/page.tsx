@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
-import { Loader2, CheckCircle2, XCircle } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Loader2, CheckCircle2 } from "lucide-react"
 import { useSession } from "next-auth/react"
 
 export default function BankSuccessPage() {
@@ -71,7 +70,7 @@ export default function BankSuccessPage() {
       <Card className="w-full max-w-md">
         <CardContent className="pt-6 pb-8">
           <div className="text-center space-y-6">
-            {status === "checking" && (
+            {status !== "success" && (
               <>
                 <Loader2 className="h-16 w-16 animate-spin text-primary mx-auto" />
                 <div className="space-y-2">
@@ -89,19 +88,6 @@ export default function BankSuccessPage() {
                 <div className="space-y-2">
                   <h2 className="text-xl font-semibold text-green-600">{message}</h2>
                   <p className="text-sm text-muted-foreground">Redirection vers votre dashboard...</p>
-                </div>
-              </>
-            )}
-
-            {status === "error" && (
-              <>
-                <XCircle className="h-16 w-16 text-destructive mx-auto" />
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <h2 className="text-xl font-semibold text-destructive">Erreur</h2>
-                    <p className="text-sm text-muted-foreground">{message}</p>
-                  </div>
-                  <Button onClick={() => router.push("/accounts/new/bank")}>Réessayer</Button>
                 </div>
               </>
             )}

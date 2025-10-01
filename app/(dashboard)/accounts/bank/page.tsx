@@ -213,12 +213,12 @@ if (loading) {
     <>
         {/* Header */}
         <div className="">
-          <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center justify-between py-4">
             <h1 className="text-2xl font-semibold">Comptes synchronisés</h1>
           </div>
         </div>
 
-        <div className="px-6 py-6 space-y-4">
+        <div className=" space-y-4">
           {/* Error Alert */}
           {error && (
             <Alert variant="destructive">
