@@ -63,7 +63,7 @@ export class CryptoWalletService {
       const db = await getDatabase()
       const collection = db.collection<CryptoWallet>(this.COLLECTION_NAME)
 
-      const wallets = await collection.find({ userId: new ObjectId(userId) }).toArray()
+      const wallets = await collection.find({ userId: userId}).toArray()
 
       return {
         success: true,

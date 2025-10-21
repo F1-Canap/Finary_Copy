@@ -302,7 +302,7 @@ export default function ConnectWalletPage() {
           <CardContent className="flex justify-center">
             <Button
               variant="outline"
-              className="w-full text-primary border-primary hover:bg-primary hover:text-primary"
+              className="w-full text-primary border-primary hover:bg-muted hover:text-primary"
             >
               Select
             </Button>
@@ -331,7 +331,7 @@ export default function ConnectWalletPage() {
           <CardContent className="flex justify-center">
             <Button
               variant="outline"
-              className="w-full text-primary border-primary hover:bg-primary hover:text-primary"
+              className="w-full text-primary border-primary hover:bg-muted hover:text-primary"
             >
               Select
             </Button>
@@ -360,7 +360,7 @@ export default function ConnectWalletPage() {
           <CardContent className="flex justify-center">
             <Button
               variant="outline"
-              className="w-full text-primary border-primary hover:bg-primary hover:text-primary"
+              className="w-full text-primary border-primary hover:bg-muted hover:text-primary"
             >
               Select
             </Button>

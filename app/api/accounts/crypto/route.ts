@@ -9,6 +9,14 @@ export async function GET(req: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "99999")
     const sortBy = searchParams.get("sortBy") || "createdAt"
     const sortOrder = (searchParams.get("sortOrder") || "desc") as "asc" | "desc"
+    const userId = searchParams.get("userId")
+
+    if(userId){
+      const result = await CryptoWalletService.findByUserId(userId)
+      console.log(userId)
+      console.log(result)
+      return NextResponse.json(result)
+    }
 
     const result = await CryptoWalletService.findAll({ page, limit, sortBy, sortOrder })
     return NextResponse.json(result)

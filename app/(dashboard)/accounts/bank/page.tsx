@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ChevronRight,  RefreshCw, Loader2, Clock} from "lucide-react"
 import { useSession } from "next-auth/react"
@@ -9,19 +8,9 @@ import { cn } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
 import { CurrencyDisplay } from "@/components/CurrencyDisplay"
 import { CurrencyCode } from "@/config/currency"
+import { Account, AccountsSummary } from "@/types/database"
+import { useAppContext } from "@/context/AppContext"
 
-
-interface Account {
-  id: string
-  requisitionId: string
-  name: string
-  type: "investment" | "savings" | "checking"
-  iban?: string
-  currency: string
-  balance: number
-  status?: "ready" | "processing"
-  lastUpdated: string
-}
 
 interface RequisitionGroup {
   requisitionId: string
@@ -32,44 +21,31 @@ interface RequisitionGroup {
   logo?: string
 }
 
-interface AccountsSummary {
-  accounts: Account[]
-  lastUpdated: string
-}
+
 
 export default function BankAccountsPage() {
-  const router = useRouter()
+  const { data: session } = useSession()
+  const { wealth, loading: contextLoading } = useAppContext()
+
   const [data, setData] = useState<AccountsSummary | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string>("")
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
-  const session = useSession()
 
   useEffect(() => {
-    const fetchAccounts = async () => {
-      try {
-        const response = await fetch(`/api/accounts/bank/summary?userId=${session.data?.user._id}`)
+    // ⏳ On attend que la session et le contexte soient disponibles
+    if (!session?.user?._id) return
 
-        if (!response.ok) {
-          console.log(response)
-          if (response.status === 401) {
-            return
-          }
-          throw new Error("Erreur lors du chargement des comptes")
-        }
-
-        const result = await response.json()
-        setData(result)
+    if (!contextLoading) {
+      if (wealth.bankAccounts) {
+        setData(wealth.bankAccounts)
         setError("")
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Une erreur est survenue")
-      } finally {
-        setLoading(false)
+      } else {
+        setError("Aucun compte bancaire trouvé.")
       }
+      setLoading(false)
     }
-
-    fetchAccounts()
-  }, [router, session.data?.user._id])
+  }, [session, contextLoading, wealth.bankAccounts])
 
   const getRelativeTime = (dateString: string) => {
     const date = new Date(dateString)
@@ -128,11 +104,11 @@ export default function BankAccountsPage() {
   }
 
 
-if (loading) {
+if (loading || contextLoading) {
   return (
     <>
       {/* Header Skeleton */}
-      <div className="px-6 py-4">
+      <div className="py-4">
         <Skeleton className="h-8 w-48" />
       </div>
 
@@ -293,7 +269,7 @@ if (loading) {
                     <div className="ml-4 pl-4 border-l-2 border-border space-y-1 py-2">
                       {group.accounts.map((account) => (
                         <div
-                          key={account.id}
+                          key={account._id?.toString()}
                           className="flex items-center justify-between p-3 rounded-lg hover:bg-accent/30 transition-colors"
                         >
                           <div className="flex-1">

@@ -117,7 +117,7 @@ export default function Dashboard() {
                     <Button
                       variant="outline"
                       disabled={cat.comingSoon}
-                      className={`w-full text-primary border-primary hover:bg-primary hover:text-primary`}
+                      className={`w-full text-primary border-primary hover:bg-muted hover:text-primary`}
                     >
                       {cat.comingSoon ? "Coming Soon" : "Explore"}
                     </Button>

@@ -71,6 +71,10 @@ export type Account = {
   createdAt?: Date
   updatedAt?: Date
 }
+export type AccountsSummary = {
+  accounts: Account[]
+  lastUpdated: string
+}
 
 export type Requisition = {
   _id?: string | ObjectId,

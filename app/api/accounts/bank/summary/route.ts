@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       success: true,
       accounts: accounts.map((acc) => ({
-        id: acc._id,
+        _id: acc._id,
         requisitionId: acc.requisitionId,
         name: acc.name,
         type: acc.type,
